@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 function useAPIresponse() {
     const [searchResult, setSearchResult] = useState([]);
     const [businessDetails, setBusinessDetails] = useState([]);
-    const [reviews, setReviews] = useState([]);
+    const [phoneSearchResult, setPhoneSearchResult] = useState([]);
     const [errMessage, setErrorMessage] = useState('');
     const searchAPI = async (userQuery) => {
         try {
@@ -31,13 +31,16 @@ function useAPIresponse() {
         }
     };
 
-    const fetchBusinessReviews = async (businessId) => {
-        console.log(businessId);
+    const searchPhoneAPI = async (userQuery) => {
         try {
-            const response = await APIinfo.get(`/${businessId}/reviews`);
-            setReviews(response.data.reviews);
+            const response = await APIinfo.get('/search/phone', {
+                params: {
+                    phone: userQuery,
+                }
+            });
+            setPhoneSearchResult(response.data);
         } catch (err) {
-            setErrorMessage('Failed to fetch business reviews');
+            setErrorMessage('Something went wrong');
         }
     };
 
@@ -45,7 +48,7 @@ function useAPIresponse() {
         searchAPI('pasta'); 
     }, []);
 
-    return { searchAPI, searchResult, businessDetails, reviews, errMessage, fetchBusinessDetails, fetchBusinessReviews };
+    return { searchAPI, searchResult, businessDetails, errMessage, fetchBusinessDetails, phoneSearchResult, searchPhoneAPI };
 }
 
 export default useAPIresponse;

@@ -5,7 +5,7 @@ export default axios.create ({
 
     baseURL: 'https://api.yelp.com/v3/businesses',
     headers: {
-        Authorization: 'Bearer VgxmKWkAl_6LG8peH-RrYr4eY4l32TV5nEBLNZL_6OWTGl5TjCzpKSuLejrwa8dXTABmjgA5wrgry7p9zB-2wSJnxKMUo_MjITxgUvGuvKwu0FJWzRGzgnMoqwgcZnYx'
+        Authorization: 'Bearer '
         
     }
 }); 

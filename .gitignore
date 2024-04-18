@@ -1,4 +1,6 @@
 # Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+API/
+
 
 # dependencies
 node_modules/
@@ -34,4 +36,3 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
-API/

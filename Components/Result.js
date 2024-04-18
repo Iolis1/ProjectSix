@@ -5,12 +5,8 @@ import { AntDesign } from '@expo/vector-icons';
 function Result({ resultArray }) {
     const navigation = useNavigation();
     const handlePress = (businessId) => {
-        navigation.navigate('Business Details',  businessId );
+        navigation.navigate('Business Details',  {businessId} );
     };
-    
-    const handlePressReviews = (businessId) => {
-        navigation.navigate('Reviews', businessId);
-    }
 
     const renderItem = ({ item }) => (
         <TouchableOpacity onPress={() => {handlePress(item.id)

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, Text, View, FlatList } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
 import { useState } from 'react';
 import useAPIresponse from './CustomHooks/useAPIrespone';
 import Lookup from './Components/Lookup';
@@ -7,6 +7,7 @@ import Result from './Components/Result';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 function HomeScreen(){
   const { searchAPI, searchResult, errMessage } = useAPIresponse();
@@ -26,44 +27,47 @@ function HomeScreen(){
 }
 
 function BusinessDetailsScreen({route}) {
-  const businessId = route.params;
+  const businessId = route.params.businessId;
   const { businessDetails, fetchBusinessDetails, errMessage } = useAPIresponse();
   React.useEffect(() => {
     fetchBusinessDetails(businessId);
-  }, []);
+  }, [businessId]);
 
   return (
     <View style={styles.container}>
       <Text style={styles.detailsContainer}>Business Details:</Text>
-      {errMessage !== '' ? <Text style={styles.businessContainer}>{errMessage}</Text> : <Text style={styles.businessContainer}>{JSON.stringify(businessDetails.name)}
-      {'\n'}{JSON.stringify(businessDetails.location.address1)}{'\n'}{JSON.stringify(businessDetails.location.city)}, {JSON.stringify(businessDetails.location.state)}{'\n'}{JSON.stringify(businessDetails.location.zip_code)}
-      {'\n'}{JSON.stringify(businessDetails.display_phone)}{'\n'}{JSON.stringify(businessDetails.rating)}{'\n'}{JSON.stringify(businessDetails.review_count)}{'\n'}{JSON.stringify(businessDetails.price)}</Text>}
+      {errMessage !== '' ? <Text style={styles.businessContainer}>{errMessage}</Text> : <Text style={styles.businessContainer}>{(businessDetails.name)}
+      {'\n'}{(businessDetails.location.address1)}{'\n'}{(businessDetails.location.city)}, {(businessDetails.location.state)}{'\n'}{(businessDetails.location.zip_code)}
+      {'\n'}{(businessDetails.display_phone)}{'\n'}{(businessDetails.rating)}{'\n'}{(businessDetails.review_count)}{'\n'}{(businessDetails.price)}</Text>}
     </View>
   );
 }
 
 
-function ReviewsScreen({route}) {
-  const { reviews, fetchBusinessReviews, errMessage } = useAPIresponse();
-  const businessId = route.params;
-
-  useEffect(() => {
-    fetchBusinessReviews(businessId);
-  }, []);
-
+function PhoneSearchScreen(props) {
+  const { searchPhoneAPI, phoneSearchResult, errMessage } = useAPIresponse();
+  const [ phoneSearchTerm, setPhoneSearchTerm] = useState('');
   return (
-    <View style={styles.container}>
-      <Text>Business Reviews:</Text>
-      {errMessage !== '' ? <Text>{errMessage}</Text> : (
-        <FlatList
-          data={reviews}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <Text>{item.text}</Text>
-          )}
+      <View style={styles.container}>
+        <Lookup
+          style={styles.lookupContainer}
+          userInput={phoneSearchTerm}
+          onInputChange={(updatedValue) => setPhoneSearchTerm(updatedValue)}
+          onSubmit={() => searchAPI(phoneSearchTerm)}
         />
-      )}
-    </View>
+        {errMessage !== '' ? <Text>{errMessage}</Text> : <Result resultArray={phoneSearchResult} />}
+          <TextInput style = {styles.InputStyle}
+          placeholder='Phone Number'
+          value = {props.userInput}
+          onChangeText = {(updateInput) => props.onInputChange(updateInput)}
+          onEndEditing={() => props.onSubmit() }
+          />
+          <View style={{marginLeft: 'auto'}}>
+              <TouchableOpacity onPress={() => props.onSubmit()}>
+                  <FontAwesome5 name='search' size={24} color='black' />
+              </TouchableOpacity>
+          </View>
+      </View>
   );
 }
 
@@ -86,13 +90,14 @@ export default function App() {
             tabBarLabel: 'Business Details',
             tabBarIcon: ({ color, size }) => (
               <MaterialCommunityIcons name="account-details" color={color} size={size} />
-            ),          }}
+            ),
+          }}
         />
-        <Tab.Screen name="Reviews" component={ReviewsScreen} 
+        <Tab.Screen name="Phone Search" component={PhoneSearchScreen} 
           options={{
-            tabBarLabel: 'Reviews',
+            tabBarLabel: 'Phone Search',
             tabBarIcon: ({ color, size }) => (
-              <MaterialCommunityIcons name="comment" color={color} size={size} />
+              <FontAwesome5 name="search" color={color} size={size} />
             ),
           }}
         />
